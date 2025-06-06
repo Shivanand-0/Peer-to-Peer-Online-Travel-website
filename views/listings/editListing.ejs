@@ -1,0 +1,46 @@
+<%layout("./layouts/boilerplate")-%>
+<body>
+    <div form-container>
+        
+        <div class="row">
+          <div class="col-8 offset-2 ">
+            <h2 class="mb-4 mt-3">Edit New Listing</h2>
+            <form method="POST" action="/listings/<%=listing._id%>/edit?_method=PUT" class="needs-validation" novalidate>
+              <div  class="mb-3">
+                <label for="" class="form-label ">Enter Title of Listing:</label>
+                <textarea class="form-control" name="listing[title]" cols="55" rows="2" required ><%=listing.title%></textarea>
+                <div class="invalid-feedback">Please enter title!</div>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Enter Description of Listing: </label>
+                <textarea class="form-control" name="listing[description]" cols="55" rows="3" required><%=listing.description%></textarea>
+                <div class="invalid-feedback">Please enter a short description!</div>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Enter Image of Listing: </label>  
+                <textarea class="form-control" name="listing[image]" cols="55" rows="4" required ><%=listing.image%></textarea>
+                <div class="invalid-feedback">Please enter valid Image URL!</div>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Enter Location of Listing: </label>  
+                <textarea class="form-control" name="listing[location]" cols="55" rows="2" required><%=listing.location%></textarea>
+                <div class="invalid-feedback">Please enter location(eg: Kanhan, Nagpur)!</div>
+              </div>
+              <div class="row mb-5" >
+                <div class="mb-3 col-md-6">
+                  <label for="" class="form-label">Enter Price of Listing:</label>  
+                  <textarea  class="form-control"name="listing[price]" cols="55" rows="2" required><%=listing.price%></textarea>
+                <div class="invalid-feedback">Please enter Price!</div>
+              </div>
+                <div class="mb-3 col-md-6">
+                  <label for="" class="form-label">Enter Country of Listing: </label> 
+                  <textarea class="form-control" name="listing[country]" cols="55" rows="2" required ><%=listing.country%></textarea>
+                <div class="invalid-feedback">Please enter country name!</div>
+              </div>  
+              </div>
+              <button class="btn  btn-dark edit-btn mt-3">Edit</button>
+            </form>
+          </div>
+        </div>
+    </div>
+</body>
