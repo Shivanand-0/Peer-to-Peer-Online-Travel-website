@@ -7,7 +7,6 @@ TravelHut is a **peer-to-peer travel booking platform** that helps users easily 
 - Express.js
 - MongoDB
 - ejs
-- 
 
 ## 🛠 Future Improvements
 
@@ -16,6 +15,3 @@ TravelHut is a **peer-to-peer travel booking platform** that helps users easily 
 - Map integration (Google Maps or Mapbox)
 - Wishlist / favorites feature
 - Host earnings dashboard
-
-
-

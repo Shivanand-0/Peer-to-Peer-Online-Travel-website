@@ -29,4 +29,40 @@
         <button class="btn btn-dark">Delete</button>
       </form>
     </div>
+    <!-- review form  -->
+    <div class="offset-3 col-8 mb-3">
+      <hr>
+      <h4>Leave a review</h4>
+      <form action="/listings/<%=listing._id%>/details/reviews" method="post" class="needs-validation" novalidate>
+        <div class="mb-3 mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]" required>
+        </div>
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea class="form-control" id="comment" cols="100" rows="5" name="review[comment]" placeholder="Write your comment here." required></textarea>
+          <div class="invalid-feedback">Please add some comment for review.</div>
+        </div>
+        <button type="submit" class="btn  btn-outline-dark">Submit</button>
+      </form>
+    </div>
+
+    <!-- display review  -->
+    <div class="col-8 offset-3 mb-3">
+      <hr>
+      <p><b>All Reviews </b></p>
+      <div class="row ">
+        <%for(let review of listing.reviews){%>
+        <div class="card mb-3 ms-3 col-5">
+          <div class="card-body mb-3">
+            <p class="card-text"><%=review.comment%></p>
+            <p class="card-text"><%=review.rating%> stars</p>
+          </div>
+          <form class="mb-3" action="/listings/<%=listing._id%>/details/reviews/<%=review._id%>?_method=DELETE" method="post" >
+              <button class="btn  btn-sm  btn-dark">Delete</button>
+            </form>
+        </div>
+        <%}%>
+      </div>
+    </div>
 </div>

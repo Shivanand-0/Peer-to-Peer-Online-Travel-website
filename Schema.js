@@ -10,3 +10,10 @@ module.exports.validListingSchema=Joi.object(
         image: Joi.string().allow("",null),
     }
 ).required();
+
+module.exports.validReviewSchema=Joi.object(
+    {
+        comment:Joi.string().required(),
+        rating:Joi.number().max(5).min(1).required(),
+    }
+).required();

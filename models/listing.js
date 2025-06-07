@@ -26,7 +26,11 @@ const listingSchema=new Schema({
     country:{
         type:String,
         required:true,
-    }
+    },
+    reviews:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Review"
+    }]
 
 });
 

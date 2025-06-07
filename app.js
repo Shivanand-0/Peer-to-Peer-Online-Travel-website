@@ -5,9 +5,11 @@ const path=require("path")
 const mongoose=require("mongoose");
 const dotenv=require("dotenv");
 const Listing=require("./models/listing")
+const Review=require("./models/review.js")
 const ejsMate=require("ejs-mate")
 const methodOverride = require('method-override')
 const {validListingSchema}=require("./Schema.js")
+const {validReviewSchema}=require("./Schema.js")
 const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js")
 
@@ -21,6 +23,21 @@ const validateListing=(req,resp,next)=>{
     else{
         next();
     }
+}
+
+const validateReview=(req,resp,next)=>{
+    let {error}=validReviewSchema.validate(req.body.review);
+    console.log("error")
+    if(error){
+    console.log("in error")
+        let errorMsg=error.details.map((el)=>el.message).join(",");
+        throw new ExpressError(400,errorMsg);
+    }
+    else{
+    console.log("in else")
+        next();
+    }
+
 }
 
 // app set and use and config
@@ -44,6 +61,9 @@ main()
 .catch((e)=>{console.log("db connection error: ",e)})
 
 // routes
+// 
+// listings routes
+// 
 // home
 app.get("/",(req,resp)=>{
     resp.redirect("/listings")
@@ -66,7 +86,7 @@ app.post("/listings/new",validateListing,wrapAsync(async(req,resp,next)=>{
 }))
 // Showing listing (read operation)
 app.get("/listings/:id/details",wrapAsync(async(req,resp)=>{
-    let listingInfo=await Listing.findById(req.params.id);
+    let listingInfo=await Listing.findById(req.params.id).populate("reviews");
     resp.render("./listings/showListing.ejs",{listing:listingInfo});
 }))
 
@@ -88,6 +108,31 @@ app.delete("/listings/:id/delete",wrapAsync(async(req,resp)=>{
     await Listing.findByIdAndDelete(req.params.id);
     resp.redirect("/listings")
 }))
+
+
+// 
+// reviews routes
+// 
+// create review
+app.post("/listings/:id/details/reviews",validateReview,wrapAsync(async(req,resp)=>{
+    let newReview= await new Review(req.body.review);
+    let listing=await Listing.findById(req.params.id);
+    listing.reviews.push(newReview);
+    listing.save();
+    newReview.save();
+    console.log("review saved..");
+    resp.redirect(`/listings/${req.params.id}/details`)
+}))
+
+// delete listing
+app.delete("/listings/:id/details/reviews/:reviewId",wrapAsync(async(req,resp)=>{
+    let {id,reviewId}=req.params;
+    await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    console.log("review deleted..");
+    resp.redirect(`/listings/${id}/details`);
+}))
+
 
 // wildcard route
 app.all("/{*any}",(req,res,next)=>{
