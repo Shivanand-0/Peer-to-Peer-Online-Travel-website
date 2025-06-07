@@ -2,43 +2,16 @@
 const express=require("express");
 const ejs=require("ejs");
 const path=require("path")
-const mongoose=require("mongoose");
-const dotenv=require("dotenv");
-const Listing=require("./models/listing")
-const Review=require("./models/review.js")
 const ejsMate=require("ejs-mate")
 const methodOverride = require('method-override')
-const {validListingSchema}=require("./Schema.js")
-const {validReviewSchema}=require("./Schema.js")
+const mongoose=require("mongoose");
+const dotenv=require("dotenv");
 const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js")
+const listingRoutes=require("./routes/listingRoutes.js")
+const reviewRoutes=require("./routes/reviewRoutes.js")
 
-// database Schema validation middelware (Server side validation)
-const validateListing=(req,resp,next)=>{
-    let {error}=validListingSchema.validate(req.body.listing);
-    if(error){
-        let errorMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errorMsg);
-    }
-    else{
-        next();
-    }
-}
 
-const validateReview=(req,resp,next)=>{
-    let {error}=validReviewSchema.validate(req.body.review);
-    console.log("error")
-    if(error){
-    console.log("in error")
-        let errorMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errorMsg);
-    }
-    else{
-    console.log("in else")
-        next();
-    }
-
-}
 
 // app set and use and config
 const app=express();
@@ -52,6 +25,8 @@ app.use(methodOverride('_method'))
 dotenv.config();
 const MONGO_URL=process.env.MONGO_URL;
 
+
+
 //connecting to database
 async function main(){
     await mongoose.connect(MONGO_URL);
@@ -60,78 +35,19 @@ main()
 .then(()=>{console.log("connect database...")})
 .catch((e)=>{console.log("db connection error: ",e)})
 
+
+
+
+
 // routes
-// 
-// listings routes
-// 
 // home
 app.get("/",(req,resp)=>{
-    resp.redirect("/listings")
+    resp.redirect("/listings");
 })
-
-app.get("/listings",wrapAsync(async(req,resp)=>{
-    let allListing =await Listing.find({})
-    resp.render("./listings/index.ejs",{allListing})
-}))
-// Adding new listing(create operation)
-app.get("/listings/new",(req,resp)=>{
-    resp.render("./listings/createListing.ejs")
-})
-
-app.post("/listings/new",validateListing,wrapAsync(async(req,resp,next)=>{
-    let newListingInfo=req.body;
-    let newListing=await Listing({...newListingInfo.listing});
-    await newListing.save();
-    resp.redirect("/listings")
-}))
-// Showing listing (read operation)
-app.get("/listings/:id/details",wrapAsync(async(req,resp)=>{
-    let listingInfo=await Listing.findById(req.params.id).populate("reviews");
-    resp.render("./listings/showListing.ejs",{listing:listingInfo});
-}))
-
-// edit listing (update operation)
-app.get("/listings/:id/edit",wrapAsync(async(req,resp)=>{
-    let listingInfo=await Listing.findById(req.params.id);
-    resp.render("./listings/editListing.ejs",{listing:listingInfo});
-
-}))
-app.put("/listings/:id/edit",validateListing,wrapAsync(async(req,resp)=>{
-    let id=req.params.id;
-    await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
-    console.log("listing updated successfully...");
-    resp.redirect(`/listings/${id}/details`)
-}))
-
-//delete listing (delete operation)
-app.delete("/listings/:id/delete",wrapAsync(async(req,resp)=>{
-    await Listing.findByIdAndDelete(req.params.id);
-    resp.redirect("/listings")
-}))
-
-
-// 
-// reviews routes
-// 
-// create review
-app.post("/listings/:id/details/reviews",validateReview,wrapAsync(async(req,resp)=>{
-    let newReview= await new Review(req.body.review);
-    let listing=await Listing.findById(req.params.id);
-    listing.reviews.push(newReview);
-    listing.save();
-    newReview.save();
-    console.log("review saved..");
-    resp.redirect(`/listings/${req.params.id}/details`)
-}))
-
-// delete listing
-app.delete("/listings/:id/details/reviews/:reviewId",wrapAsync(async(req,resp)=>{
-    let {id,reviewId}=req.params;
-    await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
-    await Review.findByIdAndDelete(reviewId);
-    console.log("review deleted..");
-    resp.redirect(`/listings/${id}/details`);
-}))
+// listing routes
+app.use("/listings",listingRoutes);
+// review routes
+app.use("/listings/:id/details/reviews",reviewRoutes);
 
 
 // wildcard route
