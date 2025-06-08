@@ -80,10 +80,10 @@ router.put("/:id/edit",validateListing,wrapAsync(async(req,resp)=>{
 //delete listing (delete operation)
 router.delete("/:id/delete",wrapAsync(async(req,resp)=>{
     let id=req.params.id;
-    let listingInfo=await Listing.findById(id);
-    let reviewList=listingInfo.reviews;
-    console.log(reviewList)
-    await Review.deleteMany({_id:{$in:reviewList}})
+    // let listingInfo=await Listing.findById(id);
+    // let reviewList=listingInfo.reviews;
+    // console.log(reviewList)
+    // await Review.deleteMany({_id:{$in:reviewList}})
     await Listing.findByIdAndDelete(id);
     req.flash("success","Listing deleted.")
     resp.redirect("/listings")

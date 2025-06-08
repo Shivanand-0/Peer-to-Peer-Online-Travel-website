@@ -1,5 +1,6 @@
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
+const Review=require("../models/review.js")
 
 const listingSchema=new Schema({
     title:{
@@ -34,6 +35,13 @@ const listingSchema=new Schema({
 
 });
 
+// mongoose midelware {will we active if findByIdAndDelete will requested}
+// it will delete all the attached review to listing.if llisting will be delete
+listingSchema.post("findOneAndDelete",async(listing)=>{
+    if(listing){
+        await Review.deleteMany({_id:{$in:listing.reviews}});
+    }
+})
 
 const Listing=mongoose.model("Listing",listingSchema);
 
