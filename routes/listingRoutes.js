@@ -26,7 +26,10 @@ const validateListing=(req,resp,next)=>{
 // 
 // home
 router.get("/",wrapAsync(async(req,resp)=>{
-    let allListing =await Listing.find({})
+    let allListing =await Listing.find({});
+    if(!allListing){
+        throw new ExpressError(500,"Listings does not exist.")
+    }
     resp.render("./listings/index.ejs",{allListing})
 }))
 // Adding new listing(create operation)
@@ -38,25 +41,40 @@ router.post("/new",validateListing,wrapAsync(async(req,resp,next)=>{
     let newListingInfo=req.body;
     let newListing=await Listing({...newListingInfo.listing});
     await newListing.save();
+    req.flash("success","New listing created.")
     resp.redirect("/listings")
 }))
 // Showing listing (read operation)
 router.get("/:id/details",wrapAsync(async(req,resp)=>{
     let listingInfo=await Listing.findById(req.params.id).populate("reviews");
-    resp.render("./listings/showListing.ejs",{listing:listingInfo});
+    if(!listingInfo){
+        req.flash("error","Listing you requested for does not exist.")
+        resp.redirect("/listings");
+    }else{
+        resp.render("./listings/showListing.ejs",{listing:listingInfo});
+    }
+    
 }))
 
 // edit listing (update operation)
 router.get("/:id/edit",wrapAsync(async(req,resp)=>{
     let listingInfo=await Listing.findById(req.params.id);
-    resp.render("./listings/editListing.ejs",{listing:listingInfo});
+    if(!listingInfo){
+        req.flash("error","Listing you requested to edit does not exist.")
+        resp.redirect("/listings");
+    }
+    else{
+        resp.render("./listings/editListing.ejs",{listing:listingInfo});
+    }
 
 }))
 router.put("/:id/edit",validateListing,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
     await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
+    req.flash("success","Listing updated.")
     console.log("listing updated successfully...");
     resp.redirect(`/listings/${id}/details`)
+    
 }))
 
 //delete listing (delete operation)
@@ -67,6 +85,7 @@ router.delete("/:id/delete",wrapAsync(async(req,resp)=>{
     console.log(reviewList)
     await Review.deleteMany({_id:{$in:reviewList}})
     await Listing.findByIdAndDelete(id);
+    req.flash("success","Listing deleted.")
     resp.redirect("/listings")
 }))
 
