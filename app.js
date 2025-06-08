@@ -10,6 +10,29 @@ const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js")
 const listingRoutes=require("./routes/listingRoutes.js")
 const reviewRoutes=require("./routes/reviewRoutes.js")
+const session=require("express-session");
+const flash=require("connect-flash")
+
+
+
+
+
+// access .env data
+dotenv.config();
+const MONGO_URL=process.env.MONGO_URL;
+const SESSION_SECRET=process.env.SESSION_SECRET;
+
+// initialization
+SESSION_OPTION={
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        httpOnly: true,
+        maxAge:7*24*60*60*1000,
+        expires:Date.now()+7*24*60*60*1000
+    }
+}
 
 
 
@@ -21,9 +44,15 @@ app.set("viwes", path.join(__dirname,"./views"))
 app.use(express.static(path.join(__dirname,"./public")))
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
-// access .env data
-dotenv.config();
-const MONGO_URL=process.env.MONGO_URL;
+// session related
+app.use(session(SESSION_OPTION));
+app.use(flash());
+// middleware to store data in locals
+app.use((req,resp,next)=>{
+    resp.locals.success=req.flash("success");
+    resp.locals.error=req.flash("error");
+    next();
+})
 
 
 
@@ -34,6 +63,7 @@ async function main(){
 main()
 .then(()=>{console.log("connect database...")})
 .catch((e)=>{console.log("db connection error: ",e)})
+
 
 
 
