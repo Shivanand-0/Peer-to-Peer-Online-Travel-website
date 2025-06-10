@@ -9,7 +9,7 @@
       alt="listing-img">
       <div class="card-body">
         <p class="card-text">
-          <p>Created By: <%=listing.owner.username%></p>
+          <p><b>Created By:</b> <i><%=listing.owner.username%></i></p>
           <p><%=listing.description%></p>
           <p><%=listing.location%></p> 
           <p><%=listing.country%></p> 
@@ -33,6 +33,7 @@
     </div>
     <%}%>
     <!-- review form  -->
+     <%if(currUser){%>
     <div class="offset-3 col-8 mb-3">
       <hr>
       <h4>Leave a review</h4>
@@ -49,7 +50,7 @@
         <button type="submit" class="btn  btn-outline-dark">Submit</button>
       </form>
     </div>
-
+    <%}%>
     <!-- display review  -->
     <div class="col-8 offset-3 mb-3">
       <hr>
@@ -58,12 +59,15 @@
         <%for(let review of listing.reviews){%>
         <div class="card mb-3 ms-3 col-5">
           <div class="card-body mb-3">
+            <p class="card-text"><b><%=review.owner.username%></b></p>
             <p class="card-text"><%=review.comment%></p>
             <p class="card-text"><%=review.rating%> stars</p>
           </div>
+          <%if(currUser && currUser._id.equals(review.owner._id)){%>
           <form class="mb-3" action="/listings/<%=listing._id%>/details/reviews/<%=review._id%>?_method=DELETE" method="post" >
-              <button class="btn  btn-sm  btn-dark">Delete</button>
-            </form>
+            <button class="btn  btn-sm  btn-dark">Delete</button>
+          </form>
+          <%}%>
         </div>
         <%}%>
       </div>

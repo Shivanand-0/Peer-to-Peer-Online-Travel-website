@@ -19,8 +19,9 @@ router.get("/",(req,resp)=>{
 router.post("/",isLoggedIn,validateReview,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
     let listing=await Listing.findById(id);
-    let newReview= new Review(req.body.review);
-    listing.reviews.push(newReview);
+    let reviewData={...req.body.review,owner:resp.locals.currUser}
+    let newReview= new Review(reviewData);
+    listing.reviews.push(newReview);    
     listing.save();
     newReview.save();
     req.flash("success","Review saved.")
@@ -34,6 +35,11 @@ router.get("/:reviewId",(req,resp)=>{
 })
 router.delete("/:reviewId",isLoggedIn,wrapAsync(async(req,resp)=>{
     let {id,reviewId}=req.params;
+    let reviewInfo=await Review.findById(reviewId);
+    if(! reviewInfo.owner.equals(resp.locals.currUser._id)){
+        req.flash("error","You don't have permission!!!")
+        return resp.redirect(`/listings/${id}/details`);
+    }
     await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
     await Review.findByIdAndDelete(reviewId);
     req.flash("success","Review deleted.")

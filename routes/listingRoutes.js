@@ -31,13 +31,15 @@ router.post("/new",isLoggedIn,validateListing,wrapAsync(async(req,resp,next)=>{
     let newListing=await Listing({...newListingInfo.listing});
     newListing.owner=userid
     let result=await newListing.save();
-    console.log(result)
+    console.log("listing addad")
     req.flash("success","New listing created.")
     resp.redirect("/listings")
 }))
 // Showing listing (read operation)
 router.get("/:id/details",wrapAsync(async(req,resp)=>{
-    let listingInfo=await Listing.findById(req.params.id).populate("reviews").populate("owner");
+    let listingInfo=await Listing.findById(req.params.id)
+    .populate("owner")
+    .populate({path:"reviews",populate:{path:"owner"}});
     if(!listingInfo){
         req.flash("error","Listing you requested for does not exist.")
         resp.redirect("/listings");

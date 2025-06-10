@@ -49,7 +49,7 @@ router.post(
         let {username}=req.user;
         req.flash("success",`welcome, ${username}`)  //req.body.username
         let redirectedUrl=resp.locals.redirectPath||"/listings";
-        console.log(redirectedUrl)
+        console.log("login success...")
         resp.redirect(redirectedUrl)
     }
 )

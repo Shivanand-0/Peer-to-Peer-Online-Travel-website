@@ -15,6 +15,10 @@ const reviewSchema= new Schema({
         required:true,
         min:1,
         max:5,
+    },
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
     }
 });
 
