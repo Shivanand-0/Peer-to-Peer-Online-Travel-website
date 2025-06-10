@@ -9,6 +9,7 @@
       alt="listing-img">
       <div class="card-body">
         <p class="card-text">
+          <p>Created By: <%=listing.owner.username%></p>
           <p><%=listing.description%></p>
           <p><%=listing.location%></p> 
           <p><%=listing.country%></p> 
@@ -16,7 +17,8 @@
         </p>
       </div>
     </div>
-     <div class="btns offset-3 mb-4 mt-3">
+    <%if(currUser && listing.owner._id.equals(currUser._id)){%>
+    <div class="btns offset-3 mb-4 mt-3">
       <a
         href="/listings/<%=listing._id%>/edit"
         class="btn btn-dark col-1 edit-btn"
@@ -29,6 +31,7 @@
         <button class="btn btn-dark">Delete</button>
       </form>
     </div>
+    <%}%>
     <!-- review form  -->
     <div class="offset-3 col-8 mb-3">
       <hr>
