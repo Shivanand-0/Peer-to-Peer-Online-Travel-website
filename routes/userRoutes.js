@@ -11,18 +11,18 @@ const userController=require("../controllers/user.js")
 
 
 // signup
-router.get("/signup",userController.renderSignupForm)
-router.post("/signup",wrapAsync(userController.signup))
+router.route("/signup")
+.get(userController.renderSignupForm)
+.post(wrapAsync(userController.signup));
 
 // login
-router.get("/login",userController.renderLoginForm)
-router.post(
-    "/login",
+router.route("/login")
+.get(userController.renderLoginForm)
+.post(
     redirectPath,
     passport.authenticate('local', { failureRedirect: '/login',failureFlash: true }),
    userController.login
 )
-
 
 // logout
 router.get("/logout", userController.logout);
