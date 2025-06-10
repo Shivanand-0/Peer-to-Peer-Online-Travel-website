@@ -20,7 +20,8 @@ main()
 //adding data in database collection named Listing
 async function initData(){
     await Listing.deleteMany({});     // before initialisation delete all previous data
-    let dataList=sampleData.data;           // here sampleData: object of a list named data & data: a list of object containg each listing-data
+
+    let dataList=sampleData.data.map((data)=>({...data,owner:"684600e6e425aacfe9acb13b"}));           // here sampleData: object of a list named data & data: a list of object containg each listing-data
     await Listing.insertMany(dataList);  //inserted a list of data
     console.log("data initialised");
 }

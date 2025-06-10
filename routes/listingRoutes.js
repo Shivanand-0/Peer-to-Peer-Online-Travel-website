@@ -2,23 +2,11 @@
 const express=require("express");
 const router=express.Router();
 const Listing=require("../models/listing")
-const Review=require("../models/review.js")
-const {validListingSchema}=require("../Schema.js")
 const wrapAsync=require("../utils/wrapAsync.js")
 const ExpressError=require("../utils/ExpressError.js")
-const {isLoggedIn}=require("../middleware.js");
+const {isLoggedIn,validateListing, isAutherized}=require("../middleware.js");
 
-// database Schema validation middelware (Server side validation)
-const validateListing=(req,resp,next)=>{
-    let {error}=validListingSchema.validate(req.body.listing);
-    if(error){
-        let errorMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errorMsg);
-    }
-    else{
-        next();
-    }
-}
+
 
 
 // 
@@ -39,14 +27,17 @@ router.get("/new",isLoggedIn,(req,resp)=>{
 
 router.post("/new",isLoggedIn,validateListing,wrapAsync(async(req,resp,next)=>{
     let newListingInfo=req.body;
+    let userid=resp.locals.currUser._id
     let newListing=await Listing({...newListingInfo.listing});
-    await newListing.save();
+    newListing.owner=userid
+    let result=await newListing.save();
+    console.log(result)
     req.flash("success","New listing created.")
     resp.redirect("/listings")
 }))
 // Showing listing (read operation)
 router.get("/:id/details",wrapAsync(async(req,resp)=>{
-    let listingInfo=await Listing.findById(req.params.id).populate("reviews");
+    let listingInfo=await Listing.findById(req.params.id).populate("reviews").populate("owner");
     if(!listingInfo){
         req.flash("error","Listing you requested for does not exist.")
         resp.redirect("/listings");
@@ -57,7 +48,7 @@ router.get("/:id/details",wrapAsync(async(req,resp)=>{
 }))
 
 // edit listing (update operation)
-router.get("/:id/edit",isLoggedIn,wrapAsync(async(req,resp)=>{
+router.get("/:id/edit",isLoggedIn,isAutherized,wrapAsync(async(req,resp)=>{
     let listingInfo=await Listing.findById(req.params.id);
     if(!listingInfo){
         req.flash("error","Listing you requested to edit does not exist.")
@@ -68,7 +59,7 @@ router.get("/:id/edit",isLoggedIn,wrapAsync(async(req,resp)=>{
     }
 
 }))
-router.put("/:id/edit",isLoggedIn,validateListing,wrapAsync(async(req,resp)=>{
+router.put("/:id/edit",isAutherized,isLoggedIn,validateListing,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
     await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
     req.flash("success","Listing updated.")
@@ -81,7 +72,7 @@ router.put("/:id/edit",isLoggedIn,validateListing,wrapAsync(async(req,resp)=>{
 router.get("/:id/delete",(req,resp)=>{
     resp.redirect(`/listings/${req.params.id}/details`)
 });
-router.delete("/:id/delete",isLoggedIn,wrapAsync(async(req,resp)=>{
+router.delete("/:id/delete",isLoggedIn,isAutherized,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
     await Listing.findByIdAndDelete(id);
     req.flash("success","Listing deleted.")
