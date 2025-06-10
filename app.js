@@ -10,9 +10,15 @@ const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js")
 const listingRoutes=require("./routes/listingRoutes.js")
 const reviewRoutes=require("./routes/reviewRoutes.js")
+const userRoutes=require("./routes/userRoutes.js")
+
 const session=require("express-session");
 const flash=require("connect-flash")
+const cookieParser = require('cookie-parser')
 
+const passport=require("passport")
+const LocalStrategy=require("passport-local")
+const User=require("./models/user.js")
 
 
 
@@ -23,14 +29,14 @@ const MONGO_URL=process.env.MONGO_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
 
 // initialization
-SESSION_OPTION={
+const SESSION_OPTION={
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { 
         httpOnly: true,
-        maxAge:7*24*60*60*1000,
-        expires:Date.now()+7*24*60*60*1000
+        maxAge:(30 * 24 * 60 * 60 * 1000),
+        expire:Date.now() + (30 * 24 * 60 * 60 * 1000)
     }
 }
 
@@ -45,14 +51,27 @@ app.use(express.static(path.join(__dirname,"./public")))
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 // session related
+app.use(cookieParser())
 app.use(session(SESSION_OPTION));
 app.use(flash());
+
+//authentication(setup after session setup)
+// passport setup
+app.use(passport.initialize());
+app.use(passport.session());
+// passport-local setup
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 // middleware to store data in locals
 app.use((req,resp,next)=>{
     resp.locals.success=req.flash("success");
     resp.locals.error=req.flash("error");
+    resp.locals.currUser=req.user;
     next();
 })
+
 
 
 
@@ -74,6 +93,8 @@ main()
 app.get("/",(req,resp)=>{
     resp.redirect("/listings");
 })
+// user routes
+app.use("/",userRoutes);
 // listing routes
 app.use("/listings",listingRoutes);
 // review routes

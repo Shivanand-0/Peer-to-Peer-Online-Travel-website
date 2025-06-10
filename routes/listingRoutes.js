@@ -6,7 +6,7 @@ const Review=require("../models/review.js")
 const {validListingSchema}=require("../Schema.js")
 const wrapAsync=require("../utils/wrapAsync.js")
 const ExpressError=require("../utils/ExpressError.js")
-
+const {isLoggedIn}=require("../middleware.js");
 
 // database Schema validation middelware (Server side validation)
 const validateListing=(req,resp,next)=>{
@@ -33,11 +33,11 @@ router.get("/",wrapAsync(async(req,resp)=>{
     resp.render("./listings/index.ejs",{allListing})
 }))
 // Adding new listing(create operation)
-router.get("/new",(req,resp)=>{
+router.get("/new",isLoggedIn,(req,resp)=>{
     resp.render("./listings/createListing.ejs")
 })
 
-router.post("/new",validateListing,wrapAsync(async(req,resp,next)=>{
+router.post("/new",isLoggedIn,validateListing,wrapAsync(async(req,resp,next)=>{
     let newListingInfo=req.body;
     let newListing=await Listing({...newListingInfo.listing});
     await newListing.save();
@@ -57,7 +57,7 @@ router.get("/:id/details",wrapAsync(async(req,resp)=>{
 }))
 
 // edit listing (update operation)
-router.get("/:id/edit",wrapAsync(async(req,resp)=>{
+router.get("/:id/edit",isLoggedIn,wrapAsync(async(req,resp)=>{
     let listingInfo=await Listing.findById(req.params.id);
     if(!listingInfo){
         req.flash("error","Listing you requested to edit does not exist.")
@@ -68,7 +68,7 @@ router.get("/:id/edit",wrapAsync(async(req,resp)=>{
     }
 
 }))
-router.put("/:id/edit",validateListing,wrapAsync(async(req,resp)=>{
+router.put("/:id/edit",isLoggedIn,validateListing,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
     await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
     req.flash("success","Listing updated.")
@@ -78,16 +78,15 @@ router.put("/:id/edit",validateListing,wrapAsync(async(req,resp)=>{
 }))
 
 //delete listing (delete operation)
-router.delete("/:id/delete",wrapAsync(async(req,resp)=>{
+router.get("/:id/delete",(req,resp)=>{
+    resp.redirect(`/listings/${req.params.id}/details`)
+});
+router.delete("/:id/delete",isLoggedIn,wrapAsync(async(req,resp)=>{
     let id=req.params.id;
-    // let listingInfo=await Listing.findById(id);
-    // let reviewList=listingInfo.reviews;
-    // console.log(reviewList)
-    // await Review.deleteMany({_id:{$in:reviewList}})
     await Listing.findByIdAndDelete(id);
     req.flash("success","Listing deleted.")
     resp.redirect("/listings")
-}))
+}));
 
 
 

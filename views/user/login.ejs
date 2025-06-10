@@ -1,0 +1,23 @@
+<%layout("./layouts/boilerplate")-%>
+<body>
+    <div class="form-container">
+      <br>
+        <div class="row">
+          <div class="col-8 offset-2">
+            <h2 class="mb-4">Login to TripHut</h2>
+            <form method="POST" action="/login" class="needs-validation" novalidate >
+              <div class="mb-3">
+                <label for="username" class="form-label">Enter username: </label>
+                <input class="form-control" type="text" name="username" placeholder="username" id="username" required>
+              </div>
+              <div class="mb-3 ">
+                <label for="password" class="form-label">Enter password: </label> 
+                <input class="form-control" type="password" name="password" placeholder="password " id="password" required> 
+              </div>
+              <button  type="submit" class="btn btn-primary add-btn">Submit</button>
+            </form>
+          </div>
+        </div>
+    </div>
+    <br><br>
+</body>

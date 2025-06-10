@@ -5,12 +5,19 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="navbar-nav">
+        <div class="navbar-nav">
           <a class="nav-link nav-item" href="/">Home</a>
           <a class="nav-link nav-item" href="/listings">All Listiings</a>
           <a class="nav-link" href="/listings/new">Add New Listing</a>
         </div>
-      </ul>
+        <div class="navbar-nav ms-auto">
+          <%if(!currUser){%>
+          <a class="nav-link" href="/signup">Signup</a>
+          <a class="nav-link" href="/login">Login</a>
+          <%}else{%>
+          <a class="nav-link" href="/logout">Logout</a>
+          <%}%>
+        </div>
     </div>
   </div>
 </nav>
