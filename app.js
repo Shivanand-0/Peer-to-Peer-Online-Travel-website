@@ -1,3 +1,7 @@
+// condition for using .env before production
+if(process.env.NODE_ENV!="production"){
+    require("dotenv").config();
+}
 // require dependencies
 const express=require("express");
 const ejs=require("ejs");
@@ -5,7 +9,6 @@ const path=require("path")
 const ejsMate=require("ejs-mate")
 const methodOverride = require('method-override')
 const mongoose=require("mongoose");
-const dotenv=require("dotenv");
 const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js")
 const listingRoutes=require("./routes/listingRoutes.js")
@@ -23,8 +26,9 @@ const User=require("./models/user.js")
 
 
 
+
 // access .env data
-dotenv.config();
+
 const MONGO_URL=process.env.MONGO_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
 

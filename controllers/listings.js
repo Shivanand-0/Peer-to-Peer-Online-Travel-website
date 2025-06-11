@@ -1,6 +1,6 @@
 const Listing=require("../models/listing")
 const ExpressError=require("../utils/ExpressError.js")
-
+const {cloudinary}=require("../cloudConfig.js")
 
 
 
@@ -21,11 +21,12 @@ module.exports.renderNewListingForm=(req,resp)=>{
 
 
 module.exports.newListing=async(req,resp,next)=>{
-    let newListingInfo=req.body;
-    let userid=resp.locals.currUser._id
-    let newListing=await Listing({...newListingInfo.listing});
-    newListing.owner=userid
-    let result=await newListing.save();
+    let url=req.file.path;
+    let filename=req.file.filename;
+    let newListing=await Listing(req.body.listing);
+    newListing.owner=req.user._id;
+    newListing.image={url, filename};
+    await newListing.save();
     console.log("listing addad")
     req.flash("success","New listing created.")
     resp.redirect("/listings")
@@ -52,14 +53,35 @@ module.exports.editListingForm=async(req,resp)=>{
         resp.redirect("/listings");
     }
     else{
-        resp.render("./listings/editListing.ejs",{listing:listingInfo});
+        let originalImgUrl=listingInfo.image.url;
+        originalImgUrl=originalImgUrl.replace("/upload","/upload/w_250")
+        resp.render("./listings/editListing.ejs",{listing:listingInfo,originalImgUrl});
     }
 
 }
 
 module.exports.updateListing=async(req,resp)=>{
     let id=req.params.id;
-    await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
+    let listing=await Listing.findByIdAndUpdate(id,{$set:req.body.listing});
+    if(typeof req.file !=="undefined"){
+        // delete prev img
+        try {
+            if (listing.image && listing.image.filename) {
+                const result = await cloudinary.uploader.destroy(listing.image.filename);
+                console.log("Cloudinary delete result:", result);
+            } else {
+                console.log("No image filename found to delete");
+            }
+        } catch(e){
+            console.log("cloud img delete error:", e);
+        }
+        // upload new img
+        let url=req.file.path;
+        let filename=req.file.filename;
+        listing.image={url:url,filename:filename};
+        await listing.save();
+    }
+
     req.flash("success","Listing updated.")
     console.log("listing updated successfully...");
     resp.redirect(`/listings/${id}/details`)
@@ -73,7 +95,18 @@ module.exports.redirectToDelete=(req,resp)=>{
 
 module.exports.deleteListing=async(req,resp)=>{
     let id=req.params.id;
+    let listing=await Listing.findById(id);
     await Listing.findByIdAndDelete(id);
+    try {
+        if (listing.image && listing.image.filename) {
+            const result = await cloudinary.uploader.destroy(listing.image.filename);
+            console.log("Cloudinary delete result:", result);
+        } else {
+            console.log("No image filename found to delete");
+        }
+    } catch (e) {
+        console.log("cloud img delete error:", e);
+    }
     req.flash("success","Listing deleted.")
     resp.redirect("/listings")
 }
