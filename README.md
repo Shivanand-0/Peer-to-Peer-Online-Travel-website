@@ -11,7 +11,8 @@ TravelHut is a **peer-to-peer travel booking platform** that helps users easily 
 ## 🛠 Future Improvements
 
 - Add reviews and ratings ✅
-- Authentication and authorizations 
+- Authentication and authorizations ✅
+- Image uploding ✅
 - Payment gateway integration (Stripe, Razorpay)
 - Map integration (Google Maps or Mapbox)
 - Wishlist / favorites feature
