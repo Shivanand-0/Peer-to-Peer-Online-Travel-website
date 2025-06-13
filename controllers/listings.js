@@ -4,7 +4,6 @@ const {cloudinary}=require("../cloudConfig.js")
 
 
 
-
 // index route controller
 module.exports.index=async(req,resp)=>{
     let allListing =await Listing.find({});
@@ -20,17 +19,42 @@ module.exports.renderNewListingForm=(req,resp)=>{
 }
 
 
-module.exports.newListing=async(req,resp,next)=>{
-    let url=req.file.path;
-    let filename=req.file.filename;
-    let newListing=await Listing(req.body.listing);
-    newListing.owner=req.user._id;
-    newListing.image={url, filename};
-    await newListing.save();
-    console.log("listing addad")
-    req.flash("success","New listing created.")
-    resp.redirect("/listings")
-}
+module.exports.newListing = async (req, resp, next) => {
+  const urlMap = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(req.body.listing.location)}`;
+  try {
+    const response = await fetch(
+      urlMap,
+       {
+      headers: {
+        'User-Agent': 'TripHut/1.0 (your.email@example.com)' // polite usage
+      }
+      }
+    );
+    const data = await response.json();
+    if (data.length > 0) {
+      let coordiate = [data[0].lat, data[0].lon];
+      let url = req.file.path;
+      let filename = req.file.filename;
+      let newListing = await Listing(req.body.listing);
+      newListing.owner = req.user._id;
+      newListing.image = { url, filename };
+      newListing.coordinate = coordiate;
+      await newListing.save();
+      console.log("listing addad");
+      console.log(coordiate);
+      req.flash("success", "New listing created.");
+      resp.redirect("/listings");
+    } else {
+      console.log("No results found.");
+      req.flash("error", "Please enter accurate location");
+      resp.redirect("/listings/new");
+    }
+  } catch (err) {
+    console.error("Geocoding error:", err);
+    req.flash("error", "Error occured!!! Please try again after some time latter.");
+    resp.redirect("./listings/createListing.ejs");
+  }
+};
 
 // show listing
 module.exports.showListing=async(req,resp)=>{

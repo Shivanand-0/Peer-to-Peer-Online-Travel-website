@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
-const Review=require("../models/review.js")
+const Review=require("../models/review.js");
+const { required } = require("joi");
 
 const listingSchema=new Schema({
     title:{
@@ -34,6 +35,10 @@ const listingSchema=new Schema({
     owner:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
+    },
+    coordinate:{
+        type:[Number],
+        required:true,
     }
 
 });

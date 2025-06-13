@@ -31,7 +31,7 @@ const User=require("./models/user.js")
 
 const MONGO_URL=process.env.MONGO_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
-
+const mapToken=process.env.MAP_TOKEN;
 // initialization
 const SESSION_OPTION={
     secret: SESSION_SECRET,
@@ -73,6 +73,7 @@ app.use((req,resp,next)=>{
     resp.locals.success=req.flash("success");
     resp.locals.error=req.flash("error");
     resp.locals.currUser=req.user;
+    resp.locals.mapToken=mapToken;
     next();
 })
 

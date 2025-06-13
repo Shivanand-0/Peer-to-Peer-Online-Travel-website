@@ -6,16 +6,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="navbar-nav">
-          <a class="nav-link nav-item" href="/">Home</a>
-          <a class="nav-link nav-item" href="/listings">All Listiings</a>
-          <a class="nav-link" href="/listings/new">Add New Listing</a>
+          <a class="nav-link nav-item" href="/listings">Explore</a>
         </div>
         <div class="navbar-nav ms-auto">
+          <a class="nav-link" href="/listings/new">TripHut your home</a>
           <%if(!currUser){%>
-          <a class="nav-link" href="/signup">Signup</a>
-          <a class="nav-link" href="/login">Login</a>
+          <a class="nav-link" href="/signup"><b>Signup</b></a>
+          <a class="nav-link" href="/login"><b>Login</b></a>
           <%}else{%>
-          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" href="/logout"><b>Logout</b></a>
           <%}%>
         </div>
     </div>
