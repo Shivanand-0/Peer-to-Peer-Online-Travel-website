@@ -16,6 +16,7 @@ const reviewRoutes=require("./routes/reviewRoutes.js")
 const userRoutes=require("./routes/userRoutes.js")
 
 const session=require("express-session");
+const MongoStore = require('connect-mongo');
 const flash=require("connect-flash")
 const cookieParser = require('cookie-parser')
 
@@ -29,11 +30,25 @@ const User=require("./models/user.js")
 
 // access .env data
 
-const MONGO_URL=process.env.MONGO_URL;
+// const DB_URL=process.env.MONGO_URL;
+const DB_URL=process.env.ATLASDB_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
 const mapToken=process.env.MAP_TOKEN;
 // initialization
+
+const store=MongoStore.create({
+    mongoUrl: DB_URL,
+    crypto:{
+        secret:SESSION_SECRET,
+    },
+    touchAfter: 24*60*60,
+})
+store.on("error",()=>{
+    console.log("Error in MONGO SESSION STORE: ", err)
+})
+
 const SESSION_OPTION={
+    store:store,
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
@@ -82,7 +97,7 @@ app.use((req,resp,next)=>{
 
 //connecting to database
 async function main(){
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(DB_URL);
 }
 main()
 .then(()=>{console.log("connect database...")})

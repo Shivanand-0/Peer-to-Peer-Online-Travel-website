@@ -57,3 +57,34 @@ module.exports.isAutherized=async(req,resp,next)=>{
     next()
 }
 
+// middleware for map geocoding
+// for handling unwanted img saving on cloud before location varification
+
+// module.exports.isLocationCorrect=async(req,resp,next)=>{
+//     console.log(req)
+//     console.log("in mw")
+//     const urlMap = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(req.body.listing.location)}`;
+//   try {
+//     console.log("in try")
+//     const response = await fetch(
+//       urlMap,
+//        {
+//       headers: {
+//         'User-Agent': 'TripHut/1.0 (your.email@example.com)' // polite usage
+//       }
+//       }
+//     );
+//     const data = await response.json();
+//     if (data.length > 0) {
+//         resp.locals.coordiate = [data[0].lat, data[0].lon];
+//         next()
+//     } else {
+//       req.flash("error", "Please enter accurate location");
+//       return resp.redirect("/listings/new");
+//     }
+//   }catch (err) {
+//     console.error("Geocoding error:", err);
+//     req.flash("error", "Error occured!!! Please try again after some time latter.");
+//     return resp.redirect("./listings/createListing.ejs");
+//   }
+// }
