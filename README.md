@@ -27,7 +27,7 @@ An end-to-end web application that allows users to list and book travel accommod
 ---
 
 ## 📁 Project Structure
-
+```
 Peer-to-Peer-Online-Travel-website/
 │
 ├─ ─ public/               → Static assets (CSS, JS)
@@ -43,7 +43,7 @@ Peer-to-Peer-Online-Travel-website/
 ├── Schema.js             → Validate Schema
 ├── package.json          → Dependencies and scripts
 └── .env.example          → Example environment variables
-
+```
 
 
 ---
@@ -88,8 +88,9 @@ Peer-to-Peer-Online-Travel-website/
    npm install
 
 3. **Create a `.env` file**
-   convert '.env.example' named file to '.env' and fill in the following:
 
+   convert `.env.example` named file to `.env` and fill in the following:
+```
   - DB_URL=your_mongodb_atlas_url
   - MAPPLS_API_KEY=your_mappls_api_key
   - NOMINATIM_URL=https://nominatim.openstreetmap.org
@@ -97,7 +98,7 @@ Peer-to-Peer-Online-Travel-website/
   - CLOUDINARY_API_KEY=your_api_key
   - CLOUDINARY_API_SECRET=your_api_secret
   - SESSION_SECRET=your_random_session_secret
-
+```
 4. **Run the app**
 
    node app.js
