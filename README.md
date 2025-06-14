@@ -21,7 +21,7 @@ An end-to-end web application that allows users to list and book travel accommod
 | Geocoding  | Nominatim OpenStreetMap API                                                 |
 | Image Hosting | Cloudinary                                                              |
 | UI Tools   | Bootstrap (assumed)                                                         |
-| Deployment | _Render / Railway / Heroku (you can add)_                                   |
+| Deployment | _Render                                    |
 | Version Control | Git & GitHub                                                           |
 
 ---
