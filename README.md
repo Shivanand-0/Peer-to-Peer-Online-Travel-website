@@ -30,10 +30,10 @@ An end-to-end web application that allows users to list and book travel accommod
 
 Peer-to-Peer-Online-Travel-website/
 │
-├── public/               → Static assets (CSS, JS)
-├── views/                → EJS templates for dynamic HTML rendering
-├── routes/               → Express route handlers
-├── controllers/          → Logic for route handling
+├─ ─ public/               → Static assets (CSS, JS)
+├─ ─ views/                → EJS templates for dynamic HTML rendering
+├─ ─ routes/               → Express route handlers
+├─ ─ controllers/          → Logic for route handling
 ├── init/                 → Sample initialisation
 ├── models/               → Mongoose schemas for MongoDB
 ├── middleware.js           → Custom middleware for authentication etc.
@@ -90,13 +90,13 @@ Peer-to-Peer-Online-Travel-website/
 3. **Create a `.env` file**
    convert '.env.example' named file to '.env' and fill in the following:
 
-   DB_URL=your_mongodb_atlas_url
-   MAPPLS_API_KEY=your_mappls_api_key
-   NOMINATIM_URL=https://nominatim.openstreetmap.org
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
-   SESSION_SECRET=your_random_session_secret
+  - DB_URL=your_mongodb_atlas_url
+  - MAPPLS_API_KEY=your_mappls_api_key
+  - NOMINATIM_URL=https://nominatim.openstreetmap.org
+  - CLOUDINARY_CLOUD_NAME=your_cloud_name
+  - CLOUDINARY_API_KEY=your_api_key
+  - CLOUDINARY_API_SECRET=your_api_secret
+  - SESSION_SECRET=your_random_session_secret
 
 4. **Run the app**
 
