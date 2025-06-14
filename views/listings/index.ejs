@@ -62,7 +62,7 @@
                         <div class="card-body">
                             <p class="card-text">
                                 <b><%=listing.title%></b> <br>
-                                <%=listing.price.toLocaleString("en-IN",{style:"currency", currency:"INR"})%> /night&nbsp; <i id="taxAmount" >+18% GST</i>
+                                <%=listing.price.toLocaleString("en-IN",{style:"currency", currency:"INR"})%> /night&nbsp; <i  class="taxAmount" >+18% GST</i>
                             </p>
                         </div>
                     </a>
@@ -73,17 +73,17 @@
 
     <script>
         let taxbtn=document.getElementById("taxToggle")
-        let taxAmount=document.getElementById("taxAmount");
-
+        let taxAmount=document.querySelectorAll(".taxAmount");
         taxbtn.addEventListener("click",()=>{
             if(taxbtn.value=="on"){
-                taxAmount.style.display="inline"
+                taxAmount.forEach((el)=>(el.style.display="inline"))
                 taxbtn.value="off"
             }
             else{
-                taxAmount.style.display="none"
+                taxAmount.forEach((el)=>(el.style.display="none"))
                 taxbtn.value="on"
             }
+
         })
     </script>
 </body>
