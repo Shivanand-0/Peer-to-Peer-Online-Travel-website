@@ -79,14 +79,16 @@ Peer-to-Peer-Online-Travel-website/
 ## 🔧 How to Run Locally
 
 1. **Clone the repo**  
-   
+   ```
    git clone https://github.com/Shivanand-0/Peer-to-Peer-Online-Travel-website.git
+   ```
+   ```
    cd Peer-to-Peer-Online-Travel-website
-
+   ```
 2. **Install dependencies**
-
+   ```
    npm install
-
+   ```
 3. **Create a `.env` file**
 
    convert `.env.example` named file to `.env` and fill in the following:
@@ -100,9 +102,9 @@ Peer-to-Peer-Online-Travel-website/
   - SESSION_SECRET=your_random_session_secret
 ```
 4. **Run the app**
-
+   ```
    node app.js
-
+   ```
    Then visit `http://localhost:3000`
 
 ---
