@@ -140,7 +140,7 @@ module.exports.deleteListing=async(req,resp)=>{
 module.exports.search=async(req,resp)=>{
     let location=req.query.search;
     try{
-    let allListing= await Listing.find({location:{$regex:location}})  
+    let allListing= await Listing.find({location:{$regex:location,$options:'i'}})  
     if(Array.isArray(allListing) && allListing.length==0){
         req.flash("error","No listing availible at this location.")
         return resp.redirect("/listings")
