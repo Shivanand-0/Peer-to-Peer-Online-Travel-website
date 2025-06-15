@@ -1,6 +1,7 @@
 const Listing=require("../models/listing")
 const ExpressError=require("../utils/ExpressError.js")
-const {cloudinary}=require("../cloudConfig.js")
+const {cloudinary}=require("../cloudConfig.js");
+const { all } = require("../routes/listingRoutes.js");
 
 
 
@@ -133,4 +134,22 @@ module.exports.deleteListing=async(req,resp)=>{
     }
     req.flash("success","Listing deleted.")
     resp.redirect("/listings")
+}
+
+// search controller
+module.exports.search=async(req,resp)=>{
+    let location=req.query.search;
+    try{
+    let allListing= await Listing.find({location:{$regex:location}})  
+    if(Array.isArray(allListing) && allListing.length==0){
+        req.flash("error","No listing availible at this location.")
+        return resp.redirect("/listings")
+    }
+    resp.render("./listings/index.ejs",{allListing})
+    }catch(e){
+        console.log("Search error: ",e)
+        req.flash("error","'Error performing search'.")
+        return resp.redirect("/listings")
+    }
+
 }

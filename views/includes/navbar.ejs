@@ -8,6 +8,12 @@
         <div class="navbar-nav">
           <a class="nav-link nav-item" href="/listings">Explore</a>
         </div>
+        <div class="navbar-nav ms-auto search-container">
+          <form class="d-flex" role="search" action="/listings/search">
+            <input class="form-control me-2" type="search" placeholder="Search destinations" aria-label="Search" name="search" id="searchInput"/>
+            <button class="btn btn-outline-success" type="submit" id="searchBtn">Search</button>
+          </form>
+        </div> 
         <div class="navbar-nav ms-auto">
           <a class="nav-link" href="/listings/new">TripHut your home</a>
           <%if(!currUser){%>

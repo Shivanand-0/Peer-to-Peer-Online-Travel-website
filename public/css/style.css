@@ -56,11 +56,45 @@ body {
 }
 #taxEnabler {
   width: 190px;
-  border: 2px solid black;
+  border: 2px solid rgb(227, 221, 221);
   border-radius: 1rem;
   height: 2.8rem;
   padding-left: 0.6rem;
   padding-top: 0.5rem;
+
+}
+/*search bar */
+
+.search-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgb(227, 221, 221);
+  border-radius: 1rem;
+  padding-left: 0.6rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-right: 0.5rem;
+
+}
+#searchInput{
+  border-radius: 1rem;
+  padding-left: 0.6rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+#searchBtn{
+  border-color: #fe424d;
+  color: #fe424d;
+  border-radius: 1rem;
+  padding-left: 0.6rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  
+}
+#searchBtn:hover{
+  background-color: #fe424d;
+  color: #ffffff;
 }
 /* Footer */
 .f-info {

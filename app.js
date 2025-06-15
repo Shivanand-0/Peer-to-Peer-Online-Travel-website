@@ -121,6 +121,7 @@ app.use("/listings",listingRoutes);
 app.use("/listings/:id/details/reviews",reviewRoutes);
 
 
+
 // wildcard route
 app.all("/{*any}",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found"))
