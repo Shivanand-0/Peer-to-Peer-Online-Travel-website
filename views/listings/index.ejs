@@ -1,57 +1,40 @@
 <%-layout("./layouts/boilerplate")%>
 <body>
-     <div id="filters">
-        <div class="filter">
-            <div><i class="fa-solid fa-fire"></i></div>
-            <p>Tranding</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-bed"></i></div>
-            <p>Rooms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-hotel"></i></div>
-            <p>Iconic Cities</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-panorama"></i></div>
-            <p>Amazing Views</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-tree-city"></i></div>
-            <p>Farms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-home"></i></div>
-            <p>Cabins</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain"></i></div>
-            <p>Mountains</p>
-        </div>
-        <!-- <div class="filter">
-            <div><i class="fa-brands fa-fort-awesome"></i></div>
-            <p>Castles</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-swimming"></i></div>
-            <p>Ammazing Pools</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-campground"></i></div>
-            <p>Camping</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-snowflake"></i></div>
-            <p>Arctic</p>
-        </div> -->
-        <div class="form-check form-check-reverse form-switch " id="taxEnabler">
+    <!-- Filters -->
+    <% const allCategories = ['Beach', 'City', 'Nature', 'Luxury', 'Adventure', 'Romantic', 'Historic', 'Ski', 'Wildlife']; %>
+    <% const selected = [].concat(query.categories || []); %>
+    <div class="bg-light border-top shadow-sm py-2 d-flex justify-content-center flex-wrap gap-2 sticky-top" style="z-index: 999;">
+    <div class="py-2 d-flex justify-content-center flex-wrap gap-2">
+    <h5>Filters</h5>
+    <span class="material-symbols-outlined">arrow_forward_ios</span>
+    <% allCategories.forEach(cat => {
+       const isActive = selected.includes(cat);
+       // Create new URLSearchParams object
+       const currentParams = new URLSearchParams();
+       // Append all other selected categories (except the one being toggled off)
+       selected.forEach(sel => {
+         if (sel !== cat) currentParams.append('categories', sel);
+       });
+       // If not active, it means we're toggling ON, so we add it too
+       if (!isActive) {
+         currentParams.append('categories', cat);
+       }
+
+       const href = '/listings/search?' + currentParams.toString();
+    %>
+    <a href="<%= href %>" class="btn btn-sm <%= isActive ? 'btn-primary' : 'btn-outline-secondary' %> ms-2">
+      <%= cat %>
+    </a>
+    <% }) %>
+    </div>
+    <div class="form-check form-check-reverse form-switch ms-auto" id="taxEnabler">
             <input class="form-check-input" type="checkbox" role="switch" id="taxToggle">
             <label class="form-check-label" for="taxToggle">Price After Taxes: </label>
-        </div>
-        
-     </div>
-     
+    </div>
+    </div>
+
+    <!-- // /////// -->
+    
     <div id="container">
         <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
             <%for(listing of allListing){%>

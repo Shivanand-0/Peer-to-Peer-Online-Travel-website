@@ -32,7 +32,8 @@ router.route("/:id/delete")
 .get(listingContoller.redirectToDelete)
 .delete(isLoggedIn,isAutherized,wrapAsync(listingContoller.deleteListing));
 
-// search
+// search & filter
 router.get("/search",wrapAsync(listingContoller.search))
+
 
 module.exports=router;

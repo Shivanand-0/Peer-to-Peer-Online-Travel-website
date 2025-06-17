@@ -11,7 +11,7 @@ module.exports.index=async(req,resp)=>{
     if(!allListing){
         throw new ExpressError(500,"Listings does not exist.")
     }
-    resp.render("./listings/index.ejs",{allListing})
+    resp.render("./listings/index.ejs",{allListing, query: req.query})
 }
 
 // create listing controller
@@ -27,7 +27,7 @@ module.exports.newListing = async (req, resp, next) => {
       urlMap,
        {
       headers: {
-        'User-Agent': 'TripHut/1.0 (your.email@example.com)' // polite usage
+        'User-Agent': 'TripHut/1.0 (my.email@example.com)' // polite usage
       }
       }
     );
@@ -36,13 +36,13 @@ module.exports.newListing = async (req, resp, next) => {
       let coordiate = [data[0].lat, data[0].lon];
       let url = req.file.path;
       let filename = req.file.filename;
-      let newListing = await Listing(req.body.listing);
+      let listingInfo=req.body.listing;
+      let newListing = await Listing(listingInfo);
       newListing.owner = req.user._id;
       newListing.image = { url, filename };
       newListing.coordinate = coordiate;
       await newListing.save();
       console.log("listing addad");
-      console.log(coordiate);
       req.flash("success", "New listing created.");
       resp.redirect("/listings");
     } else {
@@ -53,7 +53,8 @@ module.exports.newListing = async (req, resp, next) => {
   } catch (err) {
     console.error("Geocoding error:", err);
     req.flash("error", "Error occured!!! Please try again after some time latter.");
-    resp.redirect("./listings/createListing.ejs");
+    resp.redirect("/listings/new");
+
   }
 };
 
@@ -138,14 +139,26 @@ module.exports.deleteListing=async(req,resp)=>{
 
 // search controller
 module.exports.search=async(req,resp)=>{
-    let location=req.query.search;
-    try{
-    let allListing= await Listing.find({location:{$regex:location,$options:'i'}})  
+    let location=req.query.loc;
+    let categories=req.query.categories;
+    let filter={}
+    let filter1={}
+    if(location){
+        filter.location={$regex:location,$options:'i'}
+        filter1.country={$regex:location,$options:'i'}
+    }
+    if(categories && categories.length!=0){
+        filter.categories={ $all: categories }
+        filter1.categories={ $all: categories }
+    }
+    try{ 
+    let allListing= await Listing.find(filter)
+    allListing=(Array.isArray(allListing)&& allListing.length==0)? await Listing.find(filter1):allListing; 
     if(Array.isArray(allListing) && allListing.length==0){
-        req.flash("error","No listing availible at this location.")
+        req.flash("error","No listing availible for this filter.")
         return resp.redirect("/listings")
     }
-    resp.render("./listings/index.ejs",{allListing})
+    resp.render("./listings/index.ejs",{allListing, query: req.query})
     }catch(e){
         console.log("Search error: ",e)
         req.flash("error","'Error performing search'.")

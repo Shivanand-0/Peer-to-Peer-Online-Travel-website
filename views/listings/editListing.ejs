@@ -39,7 +39,19 @@
                   <label for="" class="form-label">Enter Country of Listing: </label> 
                   <textarea class="form-control" name="listing[country]" cols="55" rows="2" required ><%=listing.country%></textarea>
                 <div class="invalid-feedback">Please enter country name!</div>
-              </div>  
+              </div>
+              <div class="mb-3 ">
+                <label>Select Categories:</label><br/>
+                    <input type="checkbox" name="listing[categories]" value="Beach">  Beach &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="City">  City &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Nature">  Nature &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Luxury">  Luxury &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Adventure">  Adventure &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Romantic">  Romantic &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Historic">  Historic &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Ski">  Ski &nbsp;&nbsp;
+                    <input type="checkbox" name="listing[categories]" value="Wildlife">  Wildlife &nbsp;&nbsp;
+              </div>
               </div>
               <button class="btn  btn-dark edit-btn mt-3">Edit</button>
             </form>

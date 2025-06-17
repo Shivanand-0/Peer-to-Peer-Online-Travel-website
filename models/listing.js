@@ -39,6 +39,10 @@ const listingSchema=new Schema({
     coordinate:{
         type:[Number],
         required:true,
+    },
+    categories:{
+        type:[String],
+        enum: ['Beach', 'City', 'Nature', 'Luxury', 'Adventure', 'Romantic', 'Historic', 'Ski', 'Wildlife']
     }
 
 });

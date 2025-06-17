@@ -8,6 +8,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 //accessing url from .env file
 dotenv.config({path:"../.env"})    // configuring .env for path of it
 const MONGO_URL=process.env.ATLASDB_URL   // mongo url for  triphut database
+// const MONGO_URL=process.env.MONGO_URL   // mongo url for  triphut database
 
 // initialisation of database
 async function main(){
@@ -33,7 +34,8 @@ async function initData2(){
             if (data.length > 0) {
                 let coordiate = [data[0].lat, data[0].lon];
                 let newListing = await Listing(eachdata);
-                newListing.owner = "684cb46cbf9dd92c08de870e";
+                // newListing.owner = "684600e6e425aacfe9acb13b";  // local
+                newListing.owner = "684cb46cbf9dd92c08de870e"; //Atlus owner
                 newListing.coordinate = coordiate;
                 await newListing.save();
                 console.log(count++);
