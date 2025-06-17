@@ -30,8 +30,8 @@ const User=require("./models/user.js")
 
 // access .env data
 
-const DB_URL=process.env.MONGO_URL;
-// const DB_URL=process.env.ATLASDB_URL;
+// const DB_URL=process.env.MONGO_URL;
+const DB_URL=process.env.ATLASDB_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
 const mapToken=process.env.MAP_TOKEN;
 // initialization
