@@ -9,7 +9,7 @@ const userController=require("../controllers/user.js")
 
 
 
-
+// ////local stratigies
 // signup
 router.route("/signup")
 .get(userController.renderSignupForm)
@@ -26,5 +26,20 @@ router.route("/login")
 
 // logout
 router.get("/logout", userController.logout);
+
+
+// //// passport-google-oauth20
+// Redirect user to Google for authentication
+router.get(
+    "/auth/google",
+    passport.authenticate("google",{scope:['profile', 'email']}),
+)
+//  Handle the callback from Google
+router.get('/auth/google/callback',
+    redirectPath,
+    passport.authenticate('google',{failureRedirect: '/login'}),
+    userController.login
+);
+
 
 module.exports=router

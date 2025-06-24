@@ -23,7 +23,7 @@ const cookieParser = require('cookie-parser')
 const passport=require("passport")
 const LocalStrategy=require("passport-local")
 const User=require("./models/user.js")
-
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
 
@@ -34,6 +34,12 @@ const User=require("./models/user.js")
 const DB_URL=process.env.ATLASDB_URL;
 const SESSION_SECRET=process.env.SESSION_SECRET;
 const mapToken=process.env.MAP_TOKEN;
+// google api
+const GOOGLE_CLIENT_ID=process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET=process.env.GOOGLE_CLIENT_SECRET;
+
+
+
 // initialization
 
 const store=MongoStore.create({
@@ -80,6 +86,30 @@ app.use(passport.initialize());
 app.use(passport.session());
 // passport-local setup
 passport.use(new LocalStrategy(User.authenticate()))
+// passport-google setup
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
+  },
+  async function(accessToken, refreshToken, profile, done){
+    try{
+        const existingUser=await User.findOne({googleId:profile.id});
+        if(existingUser) return done(null, existingUser);
+
+        const newUser=new User({
+            googleId: profile.id,
+            username: profile.displayName,
+            email: profile.emails[0].value
+        });
+
+        await newUser.save();
+        return done(null, newUser);
+    }catch(err){
+        return done(err, null);
+    }
+  }
+));
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
